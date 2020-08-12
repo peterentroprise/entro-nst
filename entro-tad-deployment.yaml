@@ -1,0 +1,26 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "entro-tad"
+  namespace: "default"
+  labels:
+    app: "entro-tad"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "entro-tad"
+  template:
+    metadata:
+      labels:
+        app: "entro-tad"
+    spec:
+      containers:
+        - name: "entro-tad"
+          image: "us.gcr.io/entro-production/entro-tad:latest"
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080

@@ -10,18 +10,6 @@ ENV PORT 8080
 
 RUN conda install -c conda-forge fastapi
 
-# haystack
-
-RUN pip install git+https://github.com/deepset-ai/haystack.git
-
-RUN pip install farm-haystack
-
-# wandb
-
-RUN pip install --upgrade wandb
-
-RUN wandb login 47d3a85229ed086517bbc6a1adb7995f989b089e
-
 #gcloud storage
 
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-sdk -y
@@ -34,6 +22,6 @@ ENV GOOGLE_APPLICATION_CREDENTIALS="service-account.json"
 
 RUN gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
 
-RUN gsutil -m cp -R gs://entro-haystack-models/sentence_bert /app
+# RUN gsutil -m cp -R gs://entro-haystack-models/sentence_bert /app
 
 COPY ./app /app
