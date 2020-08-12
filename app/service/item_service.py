@@ -1,7 +1,6 @@
 from models.item_model import Payload
 from models.item_model import Question
 
-import pandas as pd
 import requests
 import uuid
 import torch
