@@ -10,6 +10,8 @@ ENV PORT 8080
 
 RUN conda install -c conda-forge fastapi
 
+# pytorch
+
 RUN conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 
 #gcloud storage

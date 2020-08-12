@@ -1,7 +1,7 @@
 apiVersion: networking.gke.io/v1beta2
 kind: ManagedCertificate
 metadata:
-  name: entro-haystack-certificate
+  name: entro-tad-certificate
 spec:
   domains:
-    - haystack.entroprise.com
+    - tad.entroprise.com
