@@ -12,3 +12,7 @@ async def read_root():
 @router.post("/uploadvideo/")
 async def create_upload_video(video: UploadFile = File(...)):
     return video_service.create_upload_video(video)
+
+@router.get("/listvideos")
+async def list_videos():
+    return video_service.list_videos()
