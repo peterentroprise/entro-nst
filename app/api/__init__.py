@@ -3,6 +3,7 @@ from fastapi.security import APIKeyHeader
 
 
 from api import item
+from api import video
 from api import healthcheck
 
 api_router = APIRouter()
@@ -20,7 +21,14 @@ api_router.include_router(
     item.router,
     prefix="/item",
     tags=["item"],
-    dependencies=[Depends(verify_api_key)],
+    # dependencies=[Depends(verify_api_key)],
+)
+
+api_router.include_router(
+    video.router,
+    prefix="/video",
+    tags=["video"],
+    # dependencies=[Depends(verify_api_key)],
 )
 
 api_router.include_router(
