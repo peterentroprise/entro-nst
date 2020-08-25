@@ -15,6 +15,10 @@ RUN conda install -c conda-forge google-cloud-storage fastapi python-multipart n
 #gcloud storage for cloud build
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-sdk -y
 
+RUN apt-get update
+
+RUN apt-get install -y libgl1-mesa-dev
+
 COPY ./service-account.json /app
 
 # COPY ./gunicorn_config.py /app
@@ -22,6 +26,6 @@ ENV GOOGLE_APPLICATION_CREDENTIALS="service-account.json"
 
 RUN gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
 
-RUN gsutil -m cp -R gs://entro-nst/weights /app/service
+# RUN gsutil -m cp -R gs://entro-nst/weights /app/service
 
 COPY ./app /app

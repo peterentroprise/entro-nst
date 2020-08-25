@@ -14,11 +14,13 @@ from torch import optim
 import PIL
 import matplotlib.pyplot as plt
 
-from utility.utility import *
-from utility.vgg_network import *
-from utility.loss_fns import *
+from service.utility.utility import *
+from service.utility.vgg_network import *
+from service.utility.loss_fns import *
 
 from tqdm import tqdm
+
+from service.config import IMAGE_SIZE, ALPHA, BETA, GAMMA, DELTA, PATCH_SIZE, CONTENT_PATH, STYLE_PATH, OUTPUT_DIR, CUDA, EPOCH
 
 bucket_name = 'entro-tad-videos'
 bucket_folder = 'raw-uploads/'
@@ -35,62 +37,41 @@ def create_upload_video(video: UploadFile = File(...)):
 
     print(f'Uploaded {video.filename} to "{bucket_name}" bucket.')
 
-    #############################################################################
-    # PARSER
-    parser = argparse.ArgumentParser(description='CNNMRF')
-    # parser for image
-    parser.add_argument('-image_size', type=int, default=256)
-    # parser for weights
-    parser.add_argument('-alpha', type=float, default=1e-1, help='Weight for content')
-    parser.add_argument('-beta',  type=float, default=1e-1, help='Weight for style')
-    parser.add_argument('-gamma', type=float, default=1e-6, help='Weight for mrf')
-    parser.add_argument('-delta', type=float, default=1e2,  help='Weight for distance loss')
-    # parser for patch size
-    parser.add_argument('-patch_size', '-patch_size', type=int, default=5, help='Patch size')
-    # parser for input images paths and names
-    parser.add_argument('-content_path',type=str, default='./inputs/contents/Swallow-Silhouette.jpg', help='Path to content image')
-    parser.add_argument('-style_path',    type=str, default='./inputs/styles/delicate.jpg', help='Path to content image')
-    # parser for output path
-    parser.add_argument('-output_dir', type=str, default='./sample_outputs/', help='Path to save output files')
-    # parser for cuda
-    parser.add_argument('-cuda', type=int, default=0, help='gpu # or -1 for cpu')
-    # parser for number of iterations
-    parser.add_argument('-epoch', type=int, default=5000, help='Number of iterations to run')
-
-    args = parser.parse_args()
-    #############################################################################
-
     # Get image paths
     # Content
-    content_path = args.content_path
+    content_path = CONTENT_PATH
     content_dir = os.path.dirname(content_path)+'/'
     content_name = os.path.basename(content_path)
 
     # Style
-    style_path = args.style_path
+    style_path = STYLE_PATH
     style_dir = os.path.dirname(style_path)+'/'
     style_name = os.path.basename(style_path)
 
     # Parameters
-    alpha = args.alpha
-    beta = args.beta
-    gamma = args.gamma
-    delta = args.delta
-    image_size = args.image_size
-    patch_size = args.patch_size
+    alpha = ALPHA
+    beta = BETA
+    gamma = GAMMA
+    delta = DELTA
+    image_size = IMAGE_SIZE
+    patch_size = PATCH_SIZE
     content_invert = True
     style_invert = True
     result_invert = True
 
+    print(torch.cuda.device_count())
+    print(torch.cuda.is_available())
+    print(torch.version.cuda)    
+
     # Cuda device
-    if args.cuda >= 0  and torch.cuda.is_available:
-        device = f'cuda:{args.cuda}'
+    if CUDA >= 0  and torch.cuda.is_available:
+        device = f'cuda:{CUDA}'
     else:
         device = 'cpu'
     print("Using device: ", device)
         
     # Get output path
-    output_dir = args.output_dir
+    output_dir = OUTPUT_DIR
     try:
         os.mkdir(output_dir)
     except:
@@ -107,7 +88,7 @@ def create_upload_video(video: UploadFile = File(...)):
 
     # Get network
     vgg = VGG()
-    vgg.load_state_dict(torch.load('vgg_conv.pth'))
+    vgg.load_state_dict(torch.load('service/vgg_conv.pth'))
     for param in vgg.parameters():
         param.requires_grad = False
     vgg.to(device)
@@ -168,7 +149,7 @@ def create_upload_video(video: UploadFile = File(...)):
     style_loss_list = []
     mrf_loss_list = []
     dist_loss_list = []
-    max_iter = args.epoch
+    max_iter = EPOCH
     show_iter = 100
 
     start_res = time.time()
