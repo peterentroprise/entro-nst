@@ -9,19 +9,19 @@ steps:
 
   - id: "docker_build"
     name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "us.gcr.io/$PROJECT_ID/entro-tad", "."]
+    args: ["build", "-t", "us.gcr.io/$PROJECT_ID/entro-nst", "."]
     timeout: "2000s"
 
   - id: "docker_push"
     name: "gcr.io/cloud-builders/docker"
-    args: ["push", "us.gcr.io/$PROJECT_ID/entro-tad"]
+    args: ["push", "us.gcr.io/$PROJECT_ID/entro-nst"]
     timeout: "2000s"
 
   - name: "gcr.io/cloud-builders/gke-deploy"
     args:
       - run
-      - --filename=entro-tad-deployment.yaml
-      - --image=us.gcr.io/$PROJECT_ID/entro-tad
+      - --filename=entro-nst-deployment.yaml
+      - --image=us.gcr.io/$PROJECT_ID/entro-nst
       - --location=us-central1-c
       - --cluster=prod-cluster
 

@@ -1,23 +1,23 @@
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
-  name: "entro-tad"
+  name: "entro-nst"
   namespace: "default"
   labels:
-    app: "entro-tad"
+    app: "entro-nst"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "entro-tad"
+      app: "entro-nst"
   template:
     metadata:
       labels:
-        app: "entro-tad"
+        app: "entro-nst"
     spec:
       containers:
-        - name: "entro-tad"
-          image: "us.gcr.io/entro-production/entro-tad:latest"
+        - name: "entro-nst"
+          image: "us.gcr.io/entro-production/entro-nst:latest"
           ports:
             - containerPort: 8080
           readinessProbe:
