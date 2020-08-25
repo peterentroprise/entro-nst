@@ -28,5 +28,5 @@ OUTPUT_DIR = str('./service/sample_outputs/')
 # USE CUDA 0 for GPU -1 for cpu
 CUDA = int(-1)
 
-# Number of iterations to run
-EPOCH = int(5000)
+# Number of iterations to run default 5000
+EPOCH = int(1)
