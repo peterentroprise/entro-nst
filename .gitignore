@@ -135,3 +135,4 @@ keys/*.pem
 hosts/*
 !hosts/*.enc
 credentials-firebase.json
+app/service/vgg_conv.pth
