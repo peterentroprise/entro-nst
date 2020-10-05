@@ -1,31 +1,15 @@
-FROM tiangolo/uvicorn-gunicorn-machine-learning:python3.7
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8-slim
 
-ENV TIMEOUT 1000
+#os updates
+RUN apt-get update && apt-get install libssl-dev libcurl4-openssl-dev python-dev gcc -y
+RUN ln -s /run/shm /dev/shm
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONUNBUFFERED=1
 
-ENV GRACEFUL_TIMEOUT 1000
+# install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN rm requirements.txt
 
 ENV PORT 8080
-
-# conda
-RUN conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
-
-# conda forge
-RUN conda install -c conda-forge google-cloud-storage fastapi python-multipart numpy scipy opencv pillow matplotlib tqdm
-
-#gcloud storage for cloud build
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-sdk -y
-
-RUN apt-get update
-
-RUN apt-get install -y libgl1-mesa-dev
-
-COPY ./service-account.json /app
-
-# COPY ./gunicorn_config.py /app
-ENV GOOGLE_APPLICATION_CREDENTIALS="service-account.json"
-
-RUN gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
-
-# RUN gsutil -m cp -R gs://entro-nst/weights /app/service
 
 COPY ./app /app

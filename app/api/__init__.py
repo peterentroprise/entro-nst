@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import APIKeyHeader
 
-
-from api import item
-from api import video
+from api import prediction
 from api import healthcheck
 
 api_router = APIRouter()
@@ -18,16 +16,9 @@ async def verify_api_key(api_key: str = Depends(API_KEY_SCHEME)):
     return api_key
 
 api_router.include_router(
-    item.router,
-    prefix="/item",
-    tags=["item"],
-    # dependencies=[Depends(verify_api_key)],
-)
-
-api_router.include_router(
-    video.router,
-    prefix="/video",
-    tags=["video"],
+    prediction.router,
+    prefix="/prediction",
+    tags=["prediction"],
     # dependencies=[Depends(verify_api_key)],
 )
 
